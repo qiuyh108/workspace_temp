@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+		<title>生成Strings</title>
+	</head>
+
+	<body>
+		<p>Excel多语言文档翻译好之后，需要把key和value重新组合起来，生成strings文件的内容。</p>
+		<p>实现思路：从Excel表格复制内容时，每个单元格的内容会被换行符分割。把字符串分割成对应的key和value数组，再把key和value组装成strings文件的格式</p>
+		<p>因此，粘贴的key和value本身<span style="color: red;">不能包含换行符</span></p>
+		<div>
+			<p>请粘贴keys:  </p>
+			<textarea name="excel_data_keys" border="1px" style="width: 300px;height: 100px;border-radius: 4px;"></textarea>
+		</div>
+		
+		<div>
+			<p>请粘贴values:  </p>
+			<textarea name="excel_data_values" border="1px" style="width: 300px;height: 100px;border-radius: 4px;"></textarea>
+		</div>
+		
+		<div >
+			<button id="get_result" style="margin-top: 30px;">点击生成strings</button>
+			<div id="output" style="margin-top: 10px;border: 1px solid green;min-height: 100px;min-width: 300px;border-radius: 4px;"></div>
+		</div>
+
+	</body>
+	<script>
+		var allKeys = [];
+		var allValues = [];
+		
+		function handleKeyString(str) {
+			allKeys = str.split("\n");
+			console.log(allKeys);
+		}
+		
+		function handleValueString(str) {
+			allValues = str.split("\n");
+			console.log(allValues)
+		}
+
+		$("textarea[name=excel_data_keys]").on('input propertychange', function() {
+			handleKeyString($('textarea[name=excel_data_keys]').val())
+		});
+		
+		$("textarea[name=excel_data_values]").on('input propertychange', function() {
+			handleValueString($('textarea[name=excel_data_values]').val())
+		});
+		
+		$("#get_result").click(function(){
+			if (allKeys.length == allValues.length) {
+				var res_str = "";
+				for(var i = 0; i < allKeys.length; i++) {
+					res_str += '"' + allKeys[i] +'" = "' + allValues[i] + '";<br/>';
+				}
+				$("#output").html(res_str);
+			} else {
+				window.alert("key和value数量不一致！")
+			}
+		});
+	</script>
+</html>
